@@ -1,0 +1,173 @@
+Practical 8 :Implementation of logic programming using Prolog.
+
+Q(1)
+
+1.Define apple, orange, banana, grapes etc... as fruits Eg- fruits(apple).
+
+2.Define tomato, chilli, potato, capsicum etc... as veg Eg- veg(tomato).
+
+3.Define some fruits as sweet and some fruits as sour. Eg- sweet(apple). Eg- sour(grapes).
+
+4.Write two rules for stating ‘I like sweet fruits’ and ‘i don't like sour fruits’Eg. like(X) :- fruit(X), sweet(X)
+
+dont_like(X):-fruit(X), sour(X)
+
+5.Query- which fruit you like or don't like??
+
+
+Code:
+fruits(apple).
+fruits(kiwi).
+fruits(pomegranate).
+fruits(strawberry).
+fruits(orange).
+fruits(grapes).
+fruits(bananas).
+fruits(guava).
+
+
+sweet(guava).
+sweet(kiwi).
+sweet(pomegranate).
+sweet(strawberry).
+sweet(banana).
+sweet(apple).
+
+
+sour(grapes).
+sour(orange).
+
+
+veg(tomato).
+veg(chilli).
+
+
+likes(X) :- fruits(X), sweet(X).
+dislikes(Y) :- fruits(Y), sour(Y).
+
+
+
+Q(2)
+
+ 1. Consider the following facts-
+
+     1. Perry is a Cat.
+
+     2. Perry has white spots.
+
+     3. Jerry is a Dog.
+
+    4. Perry has black spots.
+
+
+
+
+2. Rule -
+
+   1. Mary owns a Pet if it is a cat and it has White spots.
+
+   2. If someone owns something, he/she loves it.
+
+
+
+
+3. Perform the following queries in prolog-
+
+   1. Who is a cat?
+
+   2. Who has black spots?
+
+   3. Who owns a pet?
+
+   4. Whom does Mary love?
+
+
+
+Code:
+
+% Facts
+cat(perry).
+has_white_spots(perry).
+dog(jerry).
+has_black_spots(perry).
+
+
+% Rules
+owns(mary, X) :- cat(X), has_white_spots(X).
+loves(mary, X) :- owns(mary, X).
+
+
+% Queries
+% Who is a cat?
+% cat(X).
+
+
+% Who has black spots?
+% has_black_spots(X).
+
+
+% Who owns a pet?
+% owns(mary, X).
+
+
+% Whom does Mary love?
+% loves(mary, X).
+
+
+
+
+
+Q(3)
+
+1.Consider the following facts-
+
+  1. John likes Jane
+
+  2. Jane likes John
+
+  3. Jack likes Jane
+
+2.Rules-
+
+  Rule - if X likes Y and Y likes X, X and Y are friends.
+
+3. Perform the following queries in prolog-
+
+   1. Is Jane a friend of Jack?
+
+   2. Whom does Jane like?
+
+  3. Is John a friend of Jane?
+
+  4. Who is the friend of Jack?
+
+Code:
+
+% Facts
+likes(john, jane).
+likes(jane, john).
+likes(jack, jane).
+
+
+% Rules
+friends(X, Y) :- likes(X, Y), likes(Y, X).
+
+
+% Queries
+% Is Jane a friend of Jack?
+% friends(jane, jack).
+
+
+% Whom does Jane like?
+% likes(jane, X).
+
+
+% Is John a friend of Jane?
+% friends(john, jane).
+
+
+% Who is the friend of Jack?
+% friends(X, jack).
+
+
+
