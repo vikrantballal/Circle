@@ -1,0 +1,256 @@
+Practical 8
+
+(Q.7)
+
+1.Consider the following predicates-
+
+   1. Sudip is the father of Piyus
+
+   2. Sudip is the father of Raj.
+
+   3. Piyush is male
+
+   4. Raj is male
+
+2.Rules-
+
+   If A and B both are male and both have the same father and A is not equal to B       then A and B are brothers.
+
+3.Perform the following queries in prolog-
+
+   1. Is Sudip brother of Piyush?
+
+   2. Who is the brother of Raj?
+
+   3. What is the relation of Piyush and Raj?
+
+   4. List all the males.
+
+Code:
+
+% Facts
+father(sudip, piyush).
+father(sudip, raj).
+male(piyush).
+male(raj).
+
+
+% Rules
+brother(A, B) :- male(A), male(B), father(F, A), father(F, B), A \= B.
+
+
+% Queries
+% Is Sudip brother of Piyush?
+% brother(sudip, piyush).
+
+
+% Who is the brother of Raj?
+% brother(X, raj).
+
+
+% What is the relation of Piyush and Raj?
+% brother(piyush, raj).
+
+
+% List all the males.
+% male(X).
+
+
+
+Q(8)
+
+Consider the following predicates-
+
+   1. Pam is the parent of Bob.
+
+   2. Tom is the parent of Bob.
+
+   3. Bob is the parent of Ann.
+
+   4. Bob is the parent of Pat.
+
+   5. Pam is a female.
+
+   6. Tom is a male.
+
+   7. Bob is a male.
+
+   8. Ann is a female.
+
+   9. Pat is a female.
+
+
+
+
+Rules-
+
+   1. X is the mother of Y if X is the parent of Y and X is a female.
+
+    mother(X, Y) :- parent(X, Y), female(X)
+
+   2. X is the father of Y if X is the parent of Y and X is a male.
+
+   father(X, Y) :- parent(X, Y), male(X)
+
+
+
+
+Perform the following Query in Prolog-
+
+   1. Who is the mother of Bob?
+
+   2. What is the relation of Tom and Bob?
+
+   3. What is the relation of Bob and Pat?
+
+   4. Is Bob the mother of Ann?
+
+Code:
+
+% Facts
+parent(pam, bob).
+parent(tom, bob).
+parent(bob, ann).
+parent(bob, pat).
+female(pam).
+male(tom).
+male(bob).
+female(ann).
+female(pat).
+
+
+% Rules-
+mother(X, Y) :- parent(X, Y), female(X).
+father(X, Y) :- parent(X, Y), male(X).
+
+
+% Queries
+% Who is the mother of Bob?
+% mother(Mother, bob).
+
+
+% What is the relation of Tom and Bob?
+% parent(tom, bob).
+
+
+% What is the relation of Bob and Pat?
+% parent(bob, pat).
+
+
+% Is Bob the mother of Ann?
+% mother(bob, ann).
+
+
+
+Q(9) 
+
+1.Consider the following predicates -
+
+   1. Randhir is the parent of Kareena.
+
+   2. Babita is the parent of Kareena.
+
+   3. Randhir is the parent of Karishma.
+
+   4. Babita is the parent of Karishma.
+
+   5. Kareena is the parent of Taimur
+
+   6. Kareena is the parent of Jahangir
+
+   7. Babita is a female.
+
+   8. Randhir is a male.
+
+   9. Karina is a female
+
+   10.Karishma is a female.
+
+   11.Taimur is a male.
+
+   12.Jahangir is a male. 
+
+   13.Saif is a male.
+
+   14.Saif is the parent of Taimur.
+
+   15.Saif is the parent of Jahangir.
+
+2.Rules-
+
+   1. Define mother_of relation as : X is the mother of Y if X is the parent
+
+   of Y and X is a female.
+
+   - mother_of(X,Y):-parent(X,Y),female(X)
+
+   2. Define father_of relation as: X is the father of Y if X is the parent of Y and X is a     male.
+
+   3. Define Spouse_of relation
+
+   4. Define sibling_of relation as: X is the sibling of Y if Z is the parent of X and Z is       the parent of Y.
+
+   5. Define aunt_of relation using sibling_of relation
+
+   - aunt_of(X, Z) :- sister_of(X, Y), parent(Y, Z).
+
+   6. Define grand_parent relation as: X is the grand parent of Y if X is the parent of       parent of Y.
+
+Code:
+
+% Facts
+parent(randhir, kareena).
+parent(babita, kareena).
+parent(randhir, karishma).
+parent(babita, karishma).
+parent(kareena, taimur).
+parent(kareena, jahangir).
+parent(saif, taimur).
+parent(saif, jahangir).
+
+
+female(babita).
+female(kareena).
+female(karishma).
+male(randhir).
+male(taimur).
+male(jahangir).
+male(saif).
+
+
+% Rules
+mother_of(X,Y) :- parent(X,Y), female(X).
+father_of(X,Y) :- parent(X,Y), male(X).
+spouse_of(X,Y) :- parent(X,Z), parent(Y,Z), X \= Y.
+sibling_of(X,Y) :- parent(Z,X), parent(Z,Y), X \= Y.
+sister_of(X,Y) :- sibling_of(X,Y), female(X).
+aunt_of(X,Z) :- sister_of(X,Y), parent(Y,Z).
+grand_parent(X,Y) :- parent(X,Z), parent(Z,Y).
+
+
+% Queries
+
+
+% Who is the mother of Kareena?
+% mother_of(Mother, kareena).
+
+
+% Who is the father of Taimur?
+% father_of(Father, taimur).
+
+
+% What is the relation of Randhir and Babita?
+% spouse_of(randhir, babita).
+
+
+% What is the relation of Kareena and Karishma?
+% sibling_of(kareena, karishma).
+
+
+% Who is the aunt of Taimur?
+% aunt_of(Aunt, taimur).
+
+
+% Who are the grandparents of Taimur?
+% grand_parent(Grandparent, taimur).
+
