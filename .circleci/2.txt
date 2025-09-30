@@ -1,0 +1,168 @@
+Practical 2: Implementation of Heuristic search algorithms:
+
+Q2a) Hill Climb Search
+
+code:
+
+import random
+
+# Objective function to maximize
+def objective_function(x):
+    return -x**2 + 4*x
+
+
+# Hill Climbing Algorithm
+def hill_climb(iterations=1000, step_size=0.1):
+    # Start with a random solution
+    current_x = random.uniform(-10, 10)
+    current_value = objective_function(current_x)
+
+
+    for _ in range(iterations):
+        # Generate a new candidate by making a small random step
+        new_x = current_x + random.uniform(-step_size, step_size)
+        new_value = objective_function(new_x)
+
+
+        # If the new solution is better, move to it
+        if new_value > current_value:
+            current_x = new_x
+            current_value = new_value
+
+
+    return current_x, current_value
+
+
+# Run the algorithm
+best_x, best_value = hill_climb()
+print(f"Best solution: x = {best_x:.4f}, value = {best_value:.4f}")
+
+
+
+Q2b) Best First Search
+
+Code:
+
+
+
+from queue import PriorityQueue
+
+
+# Best First Search
+def best_first_search(graph, heuristics, start, goal):
+    visited = set()
+    pq = PriorityQueue()
+    pq.put((heuristics[start], start))  # (priority, node)
+
+
+    while not pq.empty():
+        _, current = pq.get()
+        print("Visiting:", current)
+
+
+        if current == goal:
+            print("Goal reached:", goal)
+            return True
+
+
+        visited.add(current)
+
+
+        for neighbor in graph[current]:
+            if neighbor not in visited:
+                pq.put((heuristics[neighbor], neighbor))
+
+
+    return False
+
+
+
+
+# Example Graph
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': []
+}
+
+
+# Heuristic values
+heuristics = {
+    'A': 5,
+    'B': 4,
+    'C': 3,
+    'D': 7,
+    'E': 2,
+    'F': 0   # Goal
+}
+
+
+# Run Best First Search
+best_first_search(graph, heuristics, 'A', 'F')
+
+
+
+Q2c) A* Search
+
+code:
+
+from queue import PriorityQueue
+
+# Graph with edge weights
+graph = {
+    'A': [('B', 6), ('F', 3)],
+    'B': [('A', 6), ('D', 2)],
+    'C': [('D', 1), ('E', 5)],
+    'D': [('B', 2), ('C', 1), ('E', 8), ('G', 7)],
+    'E': [('C', 5), ('D', 8), ('J', 5)],
+    'F': [('A', 3), ('G', 1)],
+    'G': [('F', 1), ('D', 7), ('H', 5), ('I', 3)],
+    'H': [('G', 5), ('I', 1)],
+    'I': [('G', 3), ('H', 1), ('E', 5), ('J', 3)],
+    'J': [('E', 5), ('I', 3)]
+}
+
+
+# Heuristic values
+heuristics = {
+    'A': 10,
+    'B': 6,
+    'C': 5,
+    'D': 3,
+    'E': 3,
+    'F': 7,
+    'G': 5,
+    'H': 3,
+    'I': 3,
+    'J': 0
+}
+
+
+def a_star_search(start, goal):
+    pq = PriorityQueue()
+    pq.put((0 + heuristics[start], 0, start, [start]))
+    visited = set()
+
+
+    while not pq.empty():
+        f, g, node, path = pq.get()
+        if node in visited:
+           continue
+        if node == goal:
+            print("A* Path:", " -> ".join(path), " | Cost:", g)
+            return
+        visited.add(node)
+
+
+        for neighbor, cost in graph[node]:
+            if neighbor not in visited:
+                pq.put((g + cost + heuristics[neighbor], g + cost, neighbor, path + [neighbor]))
+
+
+a_star_search('A', 'J')
+
+
+
