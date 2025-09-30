@@ -1,0 +1,129 @@
+Practical 1: Implementation of search algorithms
+
+Q1) Write a program to implement depth first search algorithm.
+
+code:
+
+graph1 = {
+    'A': ['C','B'],
+    'B': ['A','D','E'],
+    'C': ['A','F'],
+    'D': ['B'],
+    'E': ['B','F'],
+    'F': ['C','E']
+}
+ 
+def dfs_path(graph, start, end, path=None):
+    if path is None:
+        path = []
+    path = path + [start]   # Add current node to path
+    
+    if start == end:        # If reached destination
+        return path
+    
+    for node in graph[start]:
+        if node not in path:
+            new_path = dfs_path(graph, node, end, path)
+            if new_path:    # If a path was found
+                return new_path
+    return None
+ 
+# Example: path from A to F
+path = dfs_path(graph1, 'A', 'F')
+print("Path from A to F:", path)
+ 
+
+Q2) Write a program to implement breadth first search algorithm.
+Code:
+from collections import deque
+ 
+graph = {
+    'A': ['B','C'],
+    'B': ['A','D','E'],
+    'C': ['A','F'],
+    'D': ['B'],
+    'E': ['B','F','H'],  # E connected to H
+    'F': ['C','E'],
+    'H': ['E']
+}
+ 
+def bfs_shortest_path(graph, start, goal):
+    queue = deque([[start]])   # queue stores paths
+    visited = {start}
+    
+    while queue:
+        path = queue.popleft()
+        node = path[-1]
+        
+        if node == goal:   # destination reached
+            return path
+        
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                new_path = path + [neighbor]
+                queue.append(new_path)
+    return None
+ 
+# Find shortest path from A to H
+path = bfs_shortest_path(graph, 'A', 'H')
+print("Shortest Path from A to H:", tuple(path))
+ 
+
+Q3) Write a program to implement Hill Climbing Method
+
+code:
+
+import random
+
+ 
+
+def f(x):
+
+    return -(x - 3) ** 2 + 9  # Peak at x=3, f(3)=9
+
+ 
+
+def hill_climbing(max_iterations=100, step_size=0.1):
+
+    current = random.uniform(-10, 10)  # Random start
+
+    current_value = f(current)
+
+ 
+
+    for _ in range(max_iterations):
+
+        left = current - step_size
+
+        right = current + step_size
+
+ 
+
+        left_value = f(left)
+
+        right_value = f(right)
+
+ 
+
+        if left_value > current_value:
+
+            current, current_value = left, left_value
+
+        elif right_value > current_value:
+
+            current, current_value = right, right_value
+
+        else:
+
+            break  # No better move
+
+ 
+
+    return current, current_value  # Corrected indentation
+
+ 
+
+solution = hill_climbing()
+
+print("Hill Climbing Result: x =", round(solution[0], 2), ", f(x) =", round(solution[1], 2))
