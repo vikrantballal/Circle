@@ -1,0 +1,45 @@
+Practical 4: Implementation of the Traveling Salesman Problem using Python.
+
+code:
+
+
+
+# Distance matrix
+dist = [
+    [0, 10, 15, 20],
+    [10, 0, 35, 25],
+    [15, 35, 0, 30],
+    [20, 25, 30, 0]
+]
+
+
+def nearest_neighbor(dist):
+    n = len(dist)
+    start = 0
+    visited = [False]*n
+    path = [start]
+    visited[start] = True
+    total_cost = 0
+
+
+    current = start
+    for _ in range(n-1):
+        next_city = min(
+            [(i, dist[current][i]) for i in range(n) if not visited[i]],
+            key=lambda x: x[1]
+        )[0]
+        path.append(next_city)
+        total_cost += dist[current][next_city]
+        visited[next_city] = True
+        current = next_city
+
+
+    path.append(start)
+    total_cost += dist[current][start]
+    return path, total_cost
+
+
+path, cost = nearest_neighbor(dist)
+print("Approximate Path:", path)
+print("Total Cost:", cost)
+
