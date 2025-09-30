@@ -1,0 +1,181 @@
+practical 8
+
+Q4. 
+
+1.Consider the following facts-
+
+  1. Burger is a food.
+
+  2. Pasta is a food.
+
+  3. Pizza is a food.
+
+  4. Pizza is a lunch
+
+  5. Pasta is a dinner.
+
+2.Rules-
+
+  Rule- Every food is a meal OR anything is a meal if it is a food.
+
+
+
+
+3.Perform the following queries in prolog-
+
+  1. Is pizza a food?
+
+  2. Which food is a meal and dinner?
+
+  3. Is pasta a dinner?
+
+  4. Is pizza a dinner?
+
+Code:
+
+% Facts
+food(burger).
+food(pasta).
+food(pizza).
+lunch(pizza).
+dinner(pasta).
+
+
+% Rules
+meal(X) :- food(X).
+
+
+% Queries
+% Is pizza a food?
+% food(pizza).
+
+
+% which food is meal and dinner?
+% meal(X), dinner(X).
+
+
+% Is pasta a dinner?
+% dinner(pasta).
+
+
+% Is pizza a dinner?
+% dinner(pizza).
+
+
+
+Q5. 
+
+1.Consider the following facts-
+
+  1. Rahul studies Java.
+
+  2. Sneha Studies Jave.
+
+  3. Jiya studies Statistics.
+
+  4. Prof Mary teaches Java.
+
+  5. Prof Jary teaches Statistics.
+
+2.Rules-
+
+  Rule- X is a professor of Y if X teaches C and Y studies C.
+
+3.Perform the following queries in prolog-
+
+  1. Rahul studies what?
+
+  2. Who are the students of Prof. Mary?
+
+Code:
+
+% Facts
+studies(rahul, java).
+studies(sneha, java).
+studies(jiya, statistics).
+
+
+teaches(prof_mary, java).
+teaches(prof_jary, statistics).
+
+
+% Rules
+professor_of(X, Y) :- teaches(X, C), studies(Y, C).
+
+
+% Queries
+% Rahul studies what?
+% studies(rahul, What).
+
+
+% Who are the student of the prof_mary?
+% professor_of(prof_mary, Student).
+
+
+
+Q(6)
+
+1.Consider the following facts:
+
+  1.Jack owns bmw car.
+
+  2. John owns chevy car.
+
+  3. Olivia owns civic car.
+
+  4. Jane owns chevy car.
+
+  5. bmw car is sedan.
+
+  6. civic car is sedan.
+
+  7. chevy car is truck.
+
+2.Perform the following queries in prolog-
+
+  1. What does john own?
+
+  2. Does john own something?
+
+  3. Who owns car chevy?
+
+  4. Does jane own sedan?
+
+  5. Does jane own truck?
+
+
+
+Code:
+
+% Facts
+owns(jack, bmw_car).
+owns(john, chevy_car).
+owns(olivia, civic_car).
+owns(jane, chevy_car).
+type(bmw_car, sedan).
+type(civic_car, sedan).
+type(chevy_car, truck).
+
+
+% Queries
+% What does john own?
+% owns(john, What).
+
+
+% Does john own something?
+% owns(john, _).
+
+
+% Who owns car chevy?
+% owns(Person, chevy_car).
+
+
+% Does Jane own sedan?
+% owns(jane, Car), type(Car, sedan).
+
+
+% Does Jane own truck?
+% owns(jane, Car), type(Car, truck).
+
+
+
