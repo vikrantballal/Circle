@@ -1,0 +1,311 @@
+Practical 3
+
+Practical 3A: Implementation Tic-Tac-Toe game problem:
+
+code:
+
+import os
+import time
+
+
+board = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+player = 1
+
+
+###win###
+Win = 1
+Draw = -1
+Running = 0
+Stop = 1
+#########
+Game = Running
+Mark = 'X'
+
+
+
+
+# Draws Game Board
+def DrawBoard():
+    print(" %c | %c | %c " % (board[1], board[2], board[3]))
+    print("___|___|___")
+    print(" %c | %c | %c " % (board[4], board[5], board[6]))
+    print("___|___|___")
+    print(" %c | %c | %c " % (board[7], board[8], board[9]))
+    print("   |   |   ")
+
+
+
+
+# Checks position is empty or not
+def CheckPosition(x):
+    if board[x] == ' ':
+        return True
+    else:
+        return False
+
+
+
+
+#Checks player has won or not
+def CheckWin():
+    global Game
+    # Horizontal win
+    if board[1] == board[2] == board[3] and board[1] != ' ':
+        Game = Win
+    elif board[4] == board[5] == board[6] and board[4] != ' ':
+        Game = Win
+    elif board[7] == board[8] == board[9] and board[7] != ' ':
+        Game = Win
+    # Vertical win
+    elif board[1] == board[4] == board[7] and board[1] != ' ':
+        Game = Win
+    elif board[2] == board[5] == board[8] and board[2] != ' ':
+        Game = Win
+    elif board[3] == board[6] == board[9] and board[3] != ' ':
+        Game = Win
+    # Diagonal win
+    elif board[1] == board[5] == board[9] and board[1] != ' ':
+        Game = Win
+    elif board[3] == board[5] == board[7] and board[3] != ' ':
+        Game = Win
+    # Draw condition
+    elif ' ' not in board[1:]:
+        Game = Draw
+    else:
+        Game = Running
+
+
+
+
+# Main Game Loop
+while Game == Running:
+    os.system('cls' if os.name == 'nt' else 'clear')
+    DrawBoard()
+
+
+    if player % 2 != 0:
+        print("Player 1's chance (X): ")
+        Mark = 'X'
+    else:
+        print("Player 2's chance (O): ")
+        Mark = 'O'
+
+
+    try:
+        choice = int(input("Enter the position between [1-9]: "))
+        if choice >= 1 and choice <= 9:
+            if CheckPosition(choice):
+                board[choice] = Mark
+                player += 1
+                CheckWin()
+            else:
+                print("Position already taken! Try again.")
+                time.sleep(1)
+        else:
+            print("Invalid Input! Please enter a number between 1 and 9.")
+            time.sleep(1)
+    except ValueError:
+        print("Please enter a valid number!")
+        time.sleep(1)
+
+
+os.system('cls' if os.name == 'nt' else 'clear')
+DrawBoard()
+
+
+if Game == Draw:
+    print("Game Draw!")
+elif Game == Win:
+    player -= 1
+    if player % 2 != 0:
+        print("Player 1 Won!!")
+    else:
+        print("Player 2 Won!!")
+
+
+
+
+
+Practical 3B: Implementation 8-Puzzle problem:
+
+code:
+
+
+
+import heapq
+
+
+# Define goal state
+goal_state = [[1, 2, 3],
+              [4, 5, 6],
+              [7, 8, 0]]
+
+
+# Find position of tile in goal
+goal_positions = {val: (i, j) for i, row in enumerate(goal_state) for j, val in enumerate(row)}
+
+
+# matrix to tuple for hashing
+def to_tuple(state):
+    return tuple(tuple(row) for row in state)
+
+
+# Manhattan distance heuristic
+def manhattan(state):
+    distance = 0
+    for i in range(3):
+        for j in range(3):
+            val = state[i][j]
+            if val != 0:
+                goal_i, goal_j = goal_positions[val]
+                distance += abs(i - goal_i) + abs(j - goal_j)
+    return distance
+
+
+
+
+def get_neighbors(state):
+    neighbors = []
+    dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+
+    for i in range(3):
+        for j in range(3):
+            if state[i][j] == 0:
+                x, y = i, j
+
+
+    for dx, dy in dirs:
+        nx, ny = x + dx, y + dy
+        if 0 <= nx < 3 and 0 <= ny < 3:
+            new_state = [row[:] for row in state]
+            new_state[x][y], new_state[nx][ny] = new_state[nx][ny], new_state[x][y]
+            neighbors.append(new_state)
+
+
+    return neighbors
+
+
+# A* Search
+def a_star(start):
+    visited = set()
+    heap = []
+    heapq.heappush(heap, (manhattan(start), 0, start, []))
+
+
+    while heap:
+        f, g, state, path = heapq.heappop(heap)
+        state_tuple = to_tuple(state)
+
+
+        if state == goal_state:
+            return path + [state]
+
+
+        if state_tuple in visited:
+            continue
+
+
+        visited.add(state_tuple)
+
+
+        for neighbor in get_neighbors(state):
+            heapq.heappush(heap, (g + 1 + manhattan(neighbor), g + 1, neighbor, path + [state]))
+
+
+    return None
+
+
+
+
+# Initial state 
+start_state = [[4, 1, 2],
+               [7, 0, 3],
+               [8, 5, 6]]
+
+
+solution = a_star(start_state)
+
+
+# Print solution
+if solution:
+    print(f"Solution found in {len(solution)-1} steps:\n")
+    for step in solution:
+        for row in step:
+            print(row)
+        print(" | ")
+else:
+    print("No solution found.")
+
+
+Practical 3c: Implementation Water-Jug problem:
+
+Code:
+
+
+
+from collections import deque
+
+
+# Each state is a tuple: (12L jug, 8L jug, 5L jug)
+initial_state = (12, 0, 0)
+goal_amount = 6
+capacities = (12, 8, 5)
+
+
+def is_goal(state):
+    return sorted(state).count(6) == 2
+
+
+def get_next_states(state):
+    next_states = []
+    for i in range(3):
+        for j in range(3):
+            if i != j and state[i] > 0 and state[j] < capacities[j]:
+                # Pour water from jug i to jug j
+                amount_to_pour = min(state[i], capacities[j] - state[j])
+                new_state = list(state)
+                new_state[i] -= amount_to_pour
+                new_state[j] += amount_to_pour
+                next_states.append(tuple(new_state))
+    return next_states
+
+
+def bfs():
+    visited = set()
+    queue = deque()
+    queue.append((initial_state, []))  # state and path to reach it
+
+
+    while queue:
+        current_state, path = queue.popleft()
+
+
+        if current_state in visited:
+            continue
+        visited.add(current_state)
+
+
+        new_path = path + [current_state]
+
+
+        if is_goal(current_state):
+            return new_path
+
+
+        for next_state in get_next_states(current_state):
+            queue.append((next_state, new_path))
+    return None
+
+
+# run the solver
+solution = bfs()
+if solution:
+    print("Steps to reach the goal (12L, 8L, 5L):")
+    for step in solution:
+        print(step)
+else:
+    print("No solution found.")
+
+
+
