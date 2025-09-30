@@ -1,0 +1,167 @@
+Practical 9 :Implementation of a fuzzy-based application (Python / R).
+
+A. temperature Problem
+
+pip install numpy
+
+pip install skfuzzy
+
+pip install -U scikit-fuzzy
+
+pip install scipy
+
+pip install networkx
+
+code:
+
+
+
+import numpy as np
+import skfuzzy as fuzz
+from skfuzzy import control as ctrl
+
+
+# Create input and output variables
+temperature = ctrl.Antecedent(np.arange(0, 101, 1), 'temperature')
+fan_speed = ctrl.Consequent(np.arange(0, 101, 1), 'fan_speed')
+
+
+# Define fuzzy sets for temperature
+temperature['cold'] = fuzz.trimf(temperature.universe, [0, 0, 50])
+temperature['warm'] = fuzz.trimf(temperature.universe, [0, 50, 100])
+temperature['hot'] = fuzz.trimf(temperature.universe, [50, 100, 100])
+
+
+# Define fuzzy sets for fan_speed
+fan_speed['low'] = fuzz.trimf(fan_speed.universe, [0, 0, 50])
+fan_speed['medium'] = fuzz.trimf(fan_speed.universe, [0, 50, 100])
+fan_speed['high'] = fuzz.trimf(fan_speed.universe, [50, 100, 100])
+
+
+# Define rules
+rule1 = ctrl.Rule(temperature['cold'], fan_speed['low'])
+rule2 = ctrl.Rule(temperature['warm'], fan_speed['medium'])
+rule3 = ctrl.Rule(temperature['hot'], fan_speed['high'])
+
+
+# Create control system
+fan_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
+
+
+# Create a simulation
+fan_sim = ctrl.ControlSystemSimulation(fan_ctrl)
+
+
+# Input temperature value
+temperature_input = 15
+
+
+# Set the input temperature
+fan_sim.input['temperature'] = temperature_input
+
+
+# Compute the fan speed
+fan_sim.compute()
+
+
+# Get the fan speed value
+fan_speed_output = fan_sim.output['fan_speed']
+
+
+print(f"For a temperature of {temperature_input} degrees:")
+print(f"Fan Speed: {fan_speed_output:.2f}%")
+
+
+
+
+
+B. Tip Problem
+
+pip install numpy
+
+pip install skfuzzy
+
+pip install -U scikit-fuzzy
+
+pip install matplotlib
+
+
+
+code:
+
+import numpy as np
+import skfuzzy as fuzz
+from skfuzzy import control as ctrl
+import matplotlib.pyplot as plt
+
+
+# Create fuzzy variables outside the function
+quality = ctrl.Antecedent(np.arange(0, 11, 1), 'quality')
+service = ctrl.Antecedent(np.arange(0, 11, 1), 'service')
+tip = ctrl.Consequent(np.arange(0, 26, 1), 'tip')
+
+
+# Auto-generate membership functions for quality and service
+quality.automf(3)
+service.automf(3)
+
+
+# Define fuzzy sets for tips
+tip['low'] = fuzz.trimf(tip.universe, [0, 0, 13])
+tip['medium'] = fuzz.trimf(tip.universe, [0, 13, 25])
+tip['high'] = fuzz.trimf(tip.universe, [13, 25, 25])
+
+
+# Define fuzzy rules
+rule1 = ctrl.Rule(quality['poor'] | service['poor'], tip['low'])
+rule2 = ctrl.Rule(service['average'], tip['medium'])
+rule3 = ctrl.Rule(service['good'] | quality['good'], tip['high'])
+
+
+# New rules
+rule4 = ctrl.Rule(service['good'] & quality['average'], tip['medium'])
+rule5 = ctrl.Rule(service['average'] & quality['poor'], tip['low'])
+rule6 = ctrl.Rule(service['good'] & quality['good'], tip['high'])
+
+
+# Create control system
+tipping_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6])
+tipping = ctrl.ControlSystemSimulation(tipping_ctrl)
+
+
+# Function to compute tip
+def compute_tip(service_input, quality_input):
+    # Set input values
+    tipping.input['quality'] = quality_input
+    tipping.input['service'] = service_input
+    
+    # Compute tip
+    tipping.compute()
+    return tipping.output['tip']
+
+
+# Example usage
+service_input = 8  # Service rating (0-10)
+quality_input = 7  # Quality rating (0-10)
+tip_output = compute_tip(service_input, quality_input)
+
+
+print(f"For a service input of {service_input} and quality input of {quality_input}, "
+      f"the suggested tip is: {tip_output:.2f}%")
+
+
+# Visualizing fuzzy sets
+quality.view()
+plt.title("Quality Fuzzy Sets")
+plt.show()
+
+
+service.view()
+plt.title("Service Fuzzy Sets")
+plt.show()
+
+
+tip.view()
+plt.title("Tip Fuzzy Sets")
+plt.show()
+
